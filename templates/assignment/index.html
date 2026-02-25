@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding: 40px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>Assignments</h2>
+        {% if current_user.role == 'Administrator' %}
+        <a href="{{ url_for('assignment.new') }}" class="btn-primary">Assign Volunteer</a>
+        {% endif %}
+    </div>
+
+    <div class="form-grid">
+        <div class="glassmorphism large-card" style="width: 100%;">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                Ongoing & Past Assignments</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                        <th style="padding: 10px; color: var(--text-muted);">Volunteer</th>
+                        <th style="padding: 10px; color: var(--text-muted);">Disaster Event</th>
+                        <th style="padding: 10px; color: var(--text-muted);">Assigned Date</th>
+                        <th style="padding: 10px; color: var(--text-muted);">Status</th>
+                        {% if current_user.role == 'Administrator' %}<th style="padding: 10px;">Action</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in assignments %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 15px 10px;"><strong>{{ a.volunteer.name }}</strong></td>
+                        <td style="padding: 15px 10px;"><a href="{{ url_for('disaster.view', id=a.disaster_id) }}"
+                                style="color: #f8fafc; text-decoration: underline;">{{ a.disaster.name }}</a></td>
+                        <td style="padding: 15px 10px; color: var(--text-muted);">{{
+                            a.assigned_date.strftime('%Y-%m-%d') }}</td>
+                        <td style="padding: 15px 10px;">
+                            {% if a.status == 'Completed' %}
+                            <span style="font-weight: 500; color: var(--success);">{{ a.status }}</span>
+                            {% else %}
+                            <span style="font-weight: 500; color: #fde047;">{{ a.status }}</span>
+                            {% endif %}
+                        </td>
+                        {% if current_user.role == 'Administrator' %}
+                        <td style="padding: 15px 10px;">
+                            {% if a.status != 'Completed' %}
+                            <form action="{{ url_for('assignment.complete', id=a.id) }}" method="POST"
+                                style="display: inline;">
+                                <button type="submit" class="btn-outline"
+                                    style="padding: 4px 8px; font-size: 0.8rem; border-color: var(--success); color: var(--success);">Mark
+                                    Done</button>
+                            </form>
+                            {% else %}
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">Rated</span>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="padding: 20px 10px; text-align: center; color: var(--text-muted);">No
+                            assignments found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

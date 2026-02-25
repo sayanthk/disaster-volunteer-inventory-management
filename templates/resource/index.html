@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding: 40px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>Resource Inventory</h2>
+        <div>
+            {% if current_user.role in ['Administrator', 'Inventory Manager'] %}
+            <a href="{{ url_for('resource.new') }}" class="btn-primary" style="margin-right: 10px;">Add Resource</a>
+            <a href="{{ url_for('resource.allocate') }}" class="btn-outline">Allocate</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-grid">
+        <div class="glassmorphism large-card" style="width: 100%;">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                Available Stock</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                        <th style="padding: 10px; color: var(--text-muted);">Name</th>
+                        <th style="padding: 10px; color: var(--text-muted);">Category</th>
+                        <th style="padding: 10px; color: var(--text-muted);">Quantity</th>
+                        <th style="padding: 10px; color: var(--text-muted);">Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in resources %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 15px 10px;"><strong>{{ r.name }}</strong></td>
+                        <td style="padding: 15px 10px;"><span class="user-badge">{{ r.category }}</span></td>
+                        {% if r.quantity < 10 %} <td
+                            style="padding: 15px 10px; font-weight: 600; color: var(--danger);">{{ r.quantity }}</td>
+                            {% else %}
+                            <td style="padding: 15px 10px; font-weight: 600; color: var(--success);">{{ r.quantity }}
+                            </td>
+                            {% endif %}
+                            <td style="padding: 15px 10px; color: var(--text-muted); font-size: 0.9rem;">{{
+                                r.last_updated.strftime('%Y-%m-%d') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="padding: 20px 10px; text-align: center; color: var(--text-muted);">No
+                            resources in inventory.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="glassmorphism large-card" style="width: 100%;">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                Recent Allocations</h3>
+            {% if allocations %}
+            <ul style="list-style: none; padding-left: 0;">
+                {% for alloc in allocations %}
+                <li style="margin-bottom: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                    Allocated <strong style="color: var(--primary-col);">{{ alloc.quantity }}x {{ alloc.resource.name
+                        }}</strong> to
+                    <a href="{{ url_for('disaster.view', id=alloc.disaster.id) }}"
+                        style="color: #f8fafc; font-weight: 500; text-decoration: underline;">{{ alloc.disaster.name
+                        }}</a>
+                    <br><small style="color: var(--text-muted);">{{ alloc.allocated_date.strftime('%Y-%m-%d %H:%M')
+                        }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="color: var(--text-muted);">No past allocations.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

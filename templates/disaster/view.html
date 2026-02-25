@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding: 40px 0;">
+    <div class="glassmorphism large-card" style="margin: 0 auto; width: 100%;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 10px;">{{ disaster.name }}</h2>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px;">
+            <span class="user-badge">{{ disaster.status }}</span> • Severity: <span
+                style="font-weight: 600; color: var(--danger);">{{ disaster.severity }}</span> • {{ disaster.location }}
+        </p>
+
+        <div class="form-grid">
+            <div>
+                <h3 style="margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                    Required Skills</h3>
+                <p style="color: var(--text-muted);">{{ disaster.required_skills or 'None Specified' }}</p>
+
+                <h3
+                    style="margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                    Assigned Volunteers</h3>
+                {% if disaster.assignments %}
+                <ul style="list-style: none; padding-left: 0;">
+                    {% for assignment in disaster.assignments %}
+                    <li style="margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <strong>{{ assignment.volunteer.name }}</strong> ({{ assignment.status }})
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p style="color: var(--text-muted);">No volunteers assigned yet.</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <h3 style="margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                    Allocated Resources</h3>
+                {% if disaster.resources %}
+                <ul style="list-style: none; padding-left: 0;">
+                    {% for allocation in disaster.resources %}
+                    <li style="margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <strong>{{ allocation.quantity }}x</strong> {{ allocation.resource.name }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p style="color: var(--text-muted);">No resources allocated yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; text-align: center;">
+            <a href="{{ url_for('disaster.index') }}" class="btn-outline">Back to Disasters</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

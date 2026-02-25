@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding: 40px 0;">
+    <h2>Welcome, {{ current_user.name }}!</h2>
+    <p class="subtitle">Role: <span style="color: var(--primary-col); font-weight: 500;">{{ current_user.role }}</span>
+    </p>
+
+    <div class="form-grid" style="margin-top: 30px;">
+        <div class="glassmorphism">
+            <h3>Disaster Events</h3>
+            <p style="color: var(--text-muted); margin-top: 10px; margin-bottom: 20px;">Manage and view actively tracked
+                disaster regions.</p>
+            <a href="{{ url_for('disaster.index') }}" class="btn-outline">View Disasters</a>
+        </div>
+
+        <div class="glassmorphism">
+            <h3>Resource Inventory</h3>
+            <p style="color: var(--text-muted); margin-top: 10px; margin-bottom: 20px;">Check and allocate necessary
+                relief supplies safely.</p>
+            <a href="{{ url_for('resource.index') }}" class="btn-outline">View Resources</a>
+        </div>
+
+        <div class="glassmorphism">
+            <h3>Assignments</h3>
+            <p style="color: var(--text-muted); margin-top: 10px; margin-bottom: 20px;">View and track volunteer work
+                and allocations.</p>
+            <a href="{{ url_for('assignment.index') }}" class="btn-outline">View Assignments</a>
+        </div>
+
+        <div class="glassmorphism">
+            <h3>Volunteers</h3>
+            <p style="color: var(--text-muted); margin-top: 10px; margin-bottom: 20px;">Review volunteer profiles and
+                performance ratings.</p>
+            <a href="{{ url_for('volunteer.index') }}" class="btn-outline">Volunteer Directory</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

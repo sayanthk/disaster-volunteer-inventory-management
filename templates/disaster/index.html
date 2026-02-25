@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding: 40px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>Disaster Events</h2>
+        {% if current_user.role == 'Administrator' %}
+        <a href="{{ url_for('disaster.new') }}" class="btn-primary">Create Event</a>
+        {% endif %}
+    </div>
+
+    <div class="form-grid">
+        {% for disaster in disasters %}
+        <div class="glassmorphism">
+            <h3 style="margin-bottom: 10px;">{{ disaster.name }}</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">
+                <strong>Location:</strong> {{ disaster.location }}<br>
+                <strong>Severity:</strong> <span class="user-badge">{{ disaster.severity }}</span><br>
+                <strong>Status:</strong> {{ disaster.status }}
+            </p>
+            <a href="{{ url_for('disaster.view', id=disaster.id) }}" class="btn-outline">View Details</a>
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted);">No disaster events currently tracked.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

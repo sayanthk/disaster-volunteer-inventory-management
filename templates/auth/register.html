@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-wrapper flex-wrapper">
+    <div class="auth-card glassmorphism large-card">
+        <h2>Join the Response Team</h2>
+        <p class="subtitle">Register to assist with disaster management operations.</p>
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+
+            <div class="form-grid">
+                <!-- Column 1 -->
+                <div class="col">
+                    <div class="input-group">
+                        {{ form.name.label }}
+                        {{ form.name(class="form-control", placeholder="Full Name") }}
+                        {% for error in form.name.errors %} <span class="text-danger">{{ error }}</span> {% endfor %}
+                    </div>
+
+                    <div class="input-group">
+                        {{ form.email.label }}
+                        {{ form.email(class="form-control", placeholder="Email Address") }}
+                        {% for error in form.email.errors %} <span class="text-danger">{{ error }}</span> {% endfor %}
+                    </div>
+
+                    <div class="input-group">
+                        {{ form.password.label }}
+                        {{ form.password(class="form-control", placeholder="Password") }}
+                        {% for error in form.password.errors %} <span class="text-danger">{{ error }}</span> {% endfor
+                        %}
+                    </div>
+                </div>
+
+                <!-- Column 2 -->
+                <div class="col">
+                    <div class="input-group">
+                        {{ form.confirm_password.label }}
+                        {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
+                        {% for error in form.confirm_password.errors %} <span class="text-danger">{{ error }}</span> {%
+                        endfor %}
+                    </div>
+
+                    <div class="input-group">
+                        {{ form.role.label }}
+                        {{ form.role(id="role_select", class="form-control", onchange="toggleVolunteerFields()") }}
+                        {% for error in form.role.errors %} <span class="text-danger">{{ error }}</span> {% endfor %}
+                    </div>
+
+                    <div id="volunteer-fields">
+                        <div class="input-group">
+                            {{ form.skills.label }}
+                            {{ form.skills(class="form-control", placeholder="e.g. First Aid, Search & Rescue") }}
+                        </div>
+                        <div class="input-group">
+                            {{ form.availability.label }}
+                            {{ form.availability(class="form-control", placeholder="e.g. Weekends, Evenings") }}
+                        </div>
+                        <div class="input-group">
+                            {{ form.location.label }}
+                            {{ form.location(class="form-control", placeholder="City/Region") }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions" style="margin-top: 20px;">
+                {{ form.submit(class="btn-submit") }}
+            </div>
+        </form>
+        <p class="auth-footer">Already have an account? <a href="{{ url_for('auth.login') }}">Log in here</a></p>
+    </div>
+</div>
+
+<script>
+    function toggleVolunteerFields() {
+        const role = document.getElementById('role_select').value;
+        const vFields = document.getElementById('volunteer-fields');
+        if (role === 'Volunteer') {
+            vFields.style.display = 'block';
+            setTimeout(() => vFields.style.opacity = '1', 50);
+        } else {
+            vFields.style.opacity = '0';
+            setTimeout(() => vFields.style.display = 'none', 300);
+        }
+    }
+    document.addEventListener("DOMContentLoaded", toggleVolunteerFields);
+</script>
+{% endblock %}

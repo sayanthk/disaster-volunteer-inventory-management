@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card glassmorphism">
+        <h2>Rate Volunteer</h2>
+        <p class="subtitle">Provide feedback for <strong>{{ assignment.volunteer.name }}</strong>'s performance on
+            <strong>{{ assignment.disaster.name }}</strong>.</p>
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="input-group">
+                {{ form.rating_score.label }}
+                {{ form.rating_score(class="form-control") }}
+            </div>
+            <div class="input-group">
+                {{ form.remarks.label }}
+                {{ form.remarks(class="form-control", rows="4", placeholder="Optional feedback on their performance...")
+                }}
+            </div>
+
+            <div class="actions" style="margin-top: 20px;">
+                {{ form.submit(class="btn-submit") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

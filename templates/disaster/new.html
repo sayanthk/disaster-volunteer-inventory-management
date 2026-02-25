@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card glassmorphism">
+        <h2>Create Disaster Event</h2>
+        <p class="subtitle">Record a new emergency for volunteer and resource coordination.</p>
+
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="input-group">
+                {{ form.name.label }}
+                {{ form.name(class="form-control", placeholder="e.g. Hurricane Alpha") }}
+            </div>
+            <div class="input-group">
+                {{ form.location.label }}
+                {{ form.location(class="form-control", placeholder="City/Region") }}
+            </div>
+            <div class="input-group">
+                {{ form.severity.label }}
+                {{ form.severity(class="form-control") }}
+            </div>
+            <div class="input-group">
+                {{ form.required_skills.label }}
+                {{ form.required_skills(class="form-control", placeholder="e.g. Medical, Search & Rescue") }}
+            </div>
+
+            <div class="actions" style="margin-top: 20px;">
+                {{ form.submit(class="btn-submit") }}
+            </div>
+        </form>
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{{ url_for('disaster.index') }}" style="color: var(--text-muted);">Back to Disasters</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
