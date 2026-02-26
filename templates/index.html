@@ -1,19 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 <div style="text-align: center; padding: 100px 0; animation: fadeIn 1s ease-out;">
-    <h1
-        style="font-size: 4rem; margin-bottom: 20px; background: -webkit-linear-gradient(45deg, #818cf8, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; font-weight: 700;">
+    <h1 class="hero-title">
         Coordinate Response.<br>Save Lives.</h1>
-    <p
-        style="font-size: 1.25rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 40px auto; line-height: 1.6;">
+    <p class="hero-subtitle">
         A centralized platform for managing volunteers, resources, and emergency events during disasters. Join our force
         or manage response efforts efficiently.</p>
     <a href="{{ url_for('auth.register') }}" class="btn-primary"
-        style="font-size: 1.1rem; padding: 14px 28px; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);">Join the
+        style="font-size: 1.1rem; padding: 14px 28px; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); display: inline-block; width: auto;">Join
+        the
         Force</a>
 
-    <div
-        style="margin-top: 80px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: left; max-width: 1000px; margin-left: auto; margin-right: auto;">
+    <div class="feature-grid">
         <div class="glassmorphism" style="padding: 30px;">
             <h3 style="margin-bottom: 15px; color: #f8fafc;">Volunteer Matching</h3>
             <p style="color: var(--text-muted); font-size: 0.95rem;">Smart skill-based allocation connects the right

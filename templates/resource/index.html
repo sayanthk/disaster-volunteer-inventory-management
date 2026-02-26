@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 <div style="padding: 40px 0;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <div class="flex-responsive">
         <h2>Resource Inventory</h2>
-        <div>
+        <div style="display: flex; gap: 10px; width: 100%;">
             {% if current_user.role in ['Administrator', 'Inventory Manager'] %}
-            <a href="{{ url_for('resource.new') }}" class="btn-primary" style="margin-right: 10px;">Add Resource</a>
-            <a href="{{ url_for('resource.allocate') }}" class="btn-outline">Allocate</a>
+            <a href="{{ url_for('resource.new') }}" class="btn-primary" style="flex: 1;">Add Resource</a>
+            <a href="{{ url_for('resource.allocate') }}" class="btn-outline"
+                style="flex: 1; text-align: center;">Allocate</a>
             {% endif %}
         </div>
     </div>

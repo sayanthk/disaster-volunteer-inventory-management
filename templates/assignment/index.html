@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div style="padding: 40px 0;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <div class="flex-responsive">
         <h2>Assignments</h2>
         {% if current_user.role == 'Administrator' %}
         <a href="{{ url_for('assignment.new') }}" class="btn-primary">Assign Volunteer</a>
