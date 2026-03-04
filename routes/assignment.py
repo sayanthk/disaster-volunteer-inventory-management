@@ -25,7 +25,7 @@ def new():
     form = AssignmentForm()
     # Populate volunteers
     form.volunteer_id.choices = [(v.id, f"{v.name} ({v.skills or 'No skills'})") 
-                                 for v in User.query.filter_by(role='Volunteer').all()]
+                                 for v in User.query.filter_by(role='Volunteer', status='Active').all()]
     form.disaster_id.choices = [(d.id, d.name) for d in Disaster.query.filter_by(status='Active').all()]
     
     if form.validate_on_submit():

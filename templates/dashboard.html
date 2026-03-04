@@ -5,6 +5,157 @@
     <p class="subtitle">Role: <span style="color: var(--primary-col); font-weight: 500;">{{ current_user.role }}</span>
     </p>
 
+    {% if current_user.status == 'Training Pending' %}
+    <div class="glassmorphism" style="margin-top: 30px; padding: 30px;">
+        <h3 style="color: #fbbf24;">⚠️ Mandatory Basic Training Required</h3>
+        <p style="margin-bottom: 20px;">Welcome to the volunteer team! Before you can view or accept disaster response
+            tasks, you must review the training materials below.</p>
+
+        <div
+            style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; margin-bottom: 25px; line-height: 1.6;">
+            <h4 style="margin-bottom: 10px;">How the Application Works & Volunteer Manual</h4>
+            <div id="training-scroll-box"
+                style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);">
+                <h5 style="color: var(--primary-col); margin-top: 0;">1. Your Dashboard</h5>
+                <p style="font-size: 0.9em;">Once activated, your dashboard will display active disaster events, a
+                    resource inventory, and any tasks assigned to you by administrators.</p>
+                <h5 style="color: var(--primary-col); margin-top: 15px;">2. Disaster Events</h5>
+                <p style="font-size: 0.9em;">Information about ongoing disasters, including severity and location, is
+                    updated by admins in real-time. Review these events to understand where help is needed.</p>
+                <h5 style="color: var(--primary-col); margin-top: 15px;">3. Resource Allocation</h5>
+                <p style="font-size: 0.9em;">The system tracks available resources like food, medical supplies, and
+                    shelter. You may be asked to help manage or distribute these resources safely to the affected areas.
+                </p>
+                <h5 style="color: var(--primary-col); margin-top: 15px;">4. Task Assignments</h5>
+                <p style="font-size: 0.9em;">Administrators will assign you specific tasks based on your skills and
+                    availability. It is crucial to mark your assignments as completed once done, so the system stays up
+                    to date.</p>
+                <h5 style="color: var(--primary-col); margin-top: 15px;">5. Safety & Communication</h5>
+                <p style="font-size: 0.9em;">Always follow safety protocols provided by ground coordinators. Maintain
+                    open communication with your assigned team lead at all times. Failure to comply may result in
+                    removal from the volunteer pool.</p>
+
+                <h5 style="color: var(--primary-col); margin-top: 15px;">6. Emergency Evacuation Procedures</h5>
+                <p style="font-size: 0.9em;">If a staging area becomes unsafe, an emergency evacuation order will be
+                    initiated. Volunteers must drop non-essential supplies and follow the designated escape routes
+                    immediately. Do not attempt to salvage equipment if your life is at risk.</p>
+
+                <h5 style="color: var(--primary-col); margin-top: 15px;">7. Stress Management & Mental Health</h5>
+                <p style="font-size: 0.9em;">Disaster response can be highly traumatic. We encourage psychological first
+                    aid. If you feel overwhelmed, report to your team lead. Taking breaks and managing mental fatigue is
+                    a requirement, not a weakness.</p>
+
+                <h5 style="color: var(--primary-col); margin-top: 15px;">8. Volunteer Code of Conduct</h5>
+                <p style="font-size: 0.9em;">Volunteers represent the organization. Discriminatory behavior, failure to
+                    distribute resources equitably, or accepting bribes from victims is strictly prohibited and will
+                    result in immediate termination.</p>
+
+                <h5 style="color: var(--primary-col); margin-top: 15px;">9. Incident Reporting</h5>
+                <p style="font-size: 0.9em;">If you witness a safety hazard, an injury to another volunteer or victim,
+                    or a misuse of resources, you must log an incident report within the application immediately after
+                    securing your own safety.</p>
+
+                <p style="font-size: 0.8em; color: var(--text-muted); margin-top: 20px; text-align: center;"><em>Please
+                        scroll to the very bottom to acknowledge you have read this manual in its entirety.</em></p>
+                <!-- Extra space to force scroll -->
+                <div style="height: 50px;"></div>
+            </div>
+
+            <h4 style="margin-bottom: 5px;">Required Training Videos</h4>
+            <p style="font-size: 0.9em; color: var(--text-muted); margin-bottom: 15px;">You must click and view all
+                links below to unlock the completion button.</p>
+            <ul style="list-style: none; padding-left: 0; margin-bottom: 20px; display: grid; gap: 10px;">
+                <li>
+                    <a href="https://www.youtube.com/watch?v=FqGq8I5G8M4" target="_blank"
+                        class="training-link btn-outline"
+                        style="display: block; padding: 12px 15px; font-size: 0.9em; text-align: left; transition: all 0.3s ease;">
+                        <i class="fas fa-video" style="margin-right: 10px;"></i> Video 1: FEMA CERT in Action (Disaster
+                        Preparedness)
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.youtube.com/watch?v=-Yqk5cCXcig" target="_blank"
+                        class="training-link btn-outline"
+                        style="display: block; padding: 12px 15px; font-size: 0.9em; text-align: left; transition: all 0.3s ease;">
+                        <i class="fas fa-video" style="margin-right: 10px;"></i> Video 2: American Red Cross Hands-Only
+                        CPR
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.youtube.com/watch?v=ea1RJUOiNfQ" target="_blank"
+                        class="training-link btn-outline"
+                        style="display: block; padding: 12px 15px; font-size: 0.9em; text-align: left; transition: all 0.3s ease;">
+                        <i class="fas fa-video" style="margin-right: 10px;"></i> Video 3: First Aid Training: How to
+                        Stop Bleeding
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <form action="{{ url_for('volunteer.complete_training') }}" method="POST"
+            style="display: flex; align-items: center; gap: 15px;">
+            <button type="submit" id="complete-btn" class="btn-primary"
+                style="padding: 12px 30px; opacity: 0.5; cursor: not-allowed;" disabled
+                title="Please scroll through the text and click all video links to enable.">
+                Complete Training <i class="fas fa-lock" id="btn-icon" style="margin-left: 8px;"></i>
+            </button>
+            <span id="training-status-msg" style="color: #fbbf24; font-size: 0.95em; font-weight: 500;">
+                <i class="fas fa-exclamation-circle" style="margin-right: 5px;"></i> Action required above to unlock.
+            </span>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const scrollBox = document.getElementById('training-scroll-box');
+            const links = document.querySelectorAll('.training-link');
+            const completeBtn = document.getElementById('complete-btn');
+            const statusMsg = document.getElementById('training-status-msg');
+            const btnIcon = document.getElementById('btn-icon');
+
+            let hasScrolled = window.innerHeight > scrollBox.scrollHeight + 50 ? true : false;
+            let clickedLinks = new Set();
+            const totalLinks = links.length;
+
+            function checkCompletion() {
+                if (hasScrolled && clickedLinks.size === totalLinks) {
+                    completeBtn.disabled = false;
+                    completeBtn.style.opacity = "1";
+                    completeBtn.style.cursor = "pointer";
+                    completeBtn.title = "Ready to submit! Welcome aboard.";
+                    btnIcon.className = "fas fa-check";
+                    statusMsg.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 5px;"></i> Training criteria met! You may now complete.';
+                    statusMsg.style.color = "#10b981"; // success green
+                }
+            }
+
+            // Check manual scroll
+            if (scrollBox) {
+                scrollBox.addEventListener('scroll', function () {
+                    // Small buffer for zooming/fractional pixels
+                    if (Math.ceil(scrollBox.scrollTop + scrollBox.clientHeight) >= scrollBox.scrollHeight - 10) {
+                        hasScrolled = true;
+                        scrollBox.style.border = "1px solid #10b981";
+                        checkCompletion();
+                    }
+                });
+            }
+
+            // Check links
+            links.forEach(function (link, index) {
+                link.addEventListener('click', function () {
+                    clickedLinks.add(index);
+                    // visually mark link as watched
+                    link.style.borderColor = "#10b981";
+                    link.style.color = "#10b981";
+                    link.style.background = "rgba(16, 185, 129, 0.1)";
+                    link.innerHTML = link.innerHTML.replace('fa-video', 'fa-check-circle');
+                    checkCompletion();
+                });
+            });
+        });
+    </script>
+    {% else %}
     <div class="form-grid" style="margin-top: 30px;">
         <div class="glassmorphism">
             <h3>Disaster Events</h3>
@@ -34,5 +185,6 @@
             <a href="{{ url_for('volunteer.index') }}" class="btn-outline">Volunteer Directory</a>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -48,3 +48,24 @@ def rate(assignment_id):
         return redirect(url_for('volunteer.index'))
         
     return render_template('volunteer/rate.html', form=form, assignment=assignment)
+@volunteer_bp.route('/complete_training', methods=['POST'])
+@login_required
+def complete_training():
+    if current_user.role != 'Volunteer':
+        flash('Only volunteers can complete training.', 'danger')
+        return redirect(url_for('main.index'))
+    
+    from models import TrainingStatus
+    from datetime import datetime
+    
+    training = TrainingStatus.query.filter_by(user_id=current_user.id, status='Pending').first()
+    if training:
+        training.status = 'Completed'
+        training.completion_date = datetime.utcnow()
+        current_user.status = 'Active'
+        db.session.commit()
+        flash('Congratulations! You have completed the Basic Training and are now active.', 'success')
+    else:
+        flash('No pending training found.', 'info')
+        
+    return redirect(url_for('main.index'))

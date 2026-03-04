@@ -34,6 +34,13 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        # Ensure migration for existing databases (e.g. Render deployments)
+        try:
+            from sqlalchemy import text
+            db.session.execute(text("ALTER TABLE users ADD COLUMN status VARCHAR(50) DEFAULT 'Active' NOT NULL"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback() # Ignore if column already exists
 
     return app
 

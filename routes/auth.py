@@ -25,10 +25,18 @@ def register():
             role=form.role.data,
             skills=form.skills.data if form.role.data == 'Volunteer' else None,
             availability=form.availability.data if form.role.data == 'Volunteer' else None,
-            location=form.location.data if form.role.data == 'Volunteer' else None
+            location=form.location.data if form.role.data == 'Volunteer' else None,
+            status='Training Pending' if form.role.data == 'Volunteer' else 'Active'
         )
         db.session.add(new_user)
         db.session.commit()
+        
+        if new_user.role == 'Volunteer':
+            from models import TrainingStatus
+            ts = TrainingStatus(user_id=new_user.id, status='Pending')
+            db.session.add(ts)
+            db.session.commit()
+
         flash('Registration successful! You can now log in.', 'success')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
