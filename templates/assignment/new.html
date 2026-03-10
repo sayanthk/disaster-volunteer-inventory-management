@@ -15,6 +15,11 @@
                 {{ form.disaster_id.label }}
                 {{ form.disaster_id(class="form-control") }}
             </div>
+            <div class="input-group" style="margin-top: 15px;">
+                {{ form.task_description.label }}
+                {{ form.task_description(class="form-control", rows="3", placeholder="e.g. Distribute medical supplies
+                to Sector 4...") }}
+            </div>
 
             <div class="actions" style="margin-top: 20px;">
                 {{ form.submit(class="btn-submit") }}

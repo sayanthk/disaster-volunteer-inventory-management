@@ -16,6 +16,26 @@ def index():
     volunteers = User.query.filter_by(role='Volunteer').all()
     return render_template('volunteer/index.html', volunteers=volunteers)
 
+@volunteer_bp.route('/<int:id>')
+@login_required
+def profile(id):
+    if current_user.role != 'Administrator':
+        flash('Unauthorized access.', 'danger')
+        return redirect(url_for('main.index'))
+        
+    volunteer = User.query.get_or_404(id)
+    if volunteer.role != 'Volunteer':
+        flash('Requested user is not a volunteer.', 'warning')
+        return redirect(url_for('volunteer.index'))
+        
+    # Get all assignments for this volunteer, ordered by most recent
+    assignments = Assignment.query.filter_by(volunteer_id=volunteer.id).order_by(Assignment.assigned_date.desc()).all()
+    
+    # Get all ratings for this volunteer
+    ratings = Rating.query.filter_by(volunteer_id=volunteer.id).order_by(Rating.rated_date.desc()).all()
+    
+    return render_template('volunteer/profile.html', volunteer=volunteer, assignments=assignments, ratings=ratings)
+
 @volunteer_bp.route('/rate/<int:assignment_id>', methods=['GET', 'POST'])
 @login_required
 def rate(assignment_id):

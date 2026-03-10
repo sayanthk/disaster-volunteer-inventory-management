@@ -31,7 +31,8 @@ def new():
     if form.validate_on_submit():
         assignment = Assignment(
             volunteer_id=form.volunteer_id.data,
-            disaster_id=form.disaster_id.data
+            disaster_id=form.disaster_id.data,
+            task_description=form.task_description.data
         )
         db.session.add(assignment)
         db.session.commit()

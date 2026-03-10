@@ -40,6 +40,7 @@ class AllocationForm(FlaskForm):
 class AssignmentForm(FlaskForm):
     volunteer_id = SelectField('Volunteer', coerce=int, validators=[DataRequired()])
     disaster_id = SelectField('Disaster Event', coerce=int, validators=[DataRequired()])
+    task_description = TextAreaField('Specific Task Description', validators=[DataRequired()])
     submit = SubmitField('Assign Volunteer')
 
 class RatingForm(FlaskForm):

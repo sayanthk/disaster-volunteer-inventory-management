@@ -69,6 +69,7 @@ class Assignment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     volunteer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     disaster_id = db.Column(db.Integer, db.ForeignKey('disasters.id'), nullable=False)
+    task_description = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(50), nullable=False, default='Assigned') # Assigned, Completed, Cancelled
     assigned_date = db.Column(db.DateTime, default=datetime.utcnow)
     completion_date = db.Column(db.DateTime, nullable=True)

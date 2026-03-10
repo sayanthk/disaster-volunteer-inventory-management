@@ -17,8 +17,11 @@
                 <strong>Availability:</strong> <span class="user-badge">{{ v.availability or 'Anytime' }}</span><br>
                 <strong>Location:</strong> {{ v.location or 'Not specified' }}
             </p>
-            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div
+                style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
                 <small style="color: var(--text-muted);">Total Assignments: {{ v.assignments|length }}</small>
+                <a href="{{ url_for('volunteer.profile', id=v.id) }}" class="btn-outline"
+                    style="padding: 5px 10px; font-size: 0.85rem;">View Full Profile</a>
             </div>
         </div>
         {% else %}

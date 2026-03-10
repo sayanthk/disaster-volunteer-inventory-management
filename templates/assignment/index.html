@@ -17,6 +17,7 @@
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
                         <th style="padding: 10px; color: var(--text-muted);">Volunteer</th>
                         <th style="padding: 10px; color: var(--text-muted);">Disaster Event</th>
+                        <th style="padding: 10px; color: var(--text-muted);">Task Details</th>
                         <th style="padding: 10px; color: var(--text-muted);">Assigned Date</th>
                         <th style="padding: 10px; color: var(--text-muted);">Status</th>
                         {% if current_user.role == 'Administrator' %}<th style="padding: 10px;">Action</th>{% endif %}
@@ -28,6 +29,11 @@
                         <td style="padding: 15px 10px;"><strong>{{ a.volunteer.name }}</strong></td>
                         <td style="padding: 15px 10px;"><a href="{{ url_for('disaster.view', id=a.disaster_id) }}"
                                 style="color: #f8fafc; text-decoration: underline;">{{ a.disaster.name }}</a></td>
+                        <td style="padding: 15px 10px;">
+                            <span style="font-size: 0.9em; display:block; max-width: 200px; word-wrap: break-word;">
+                                {{ a.task_description or 'General Duties' }}
+                            </span>
+                        </td>
                         <td style="padding: 15px 10px; color: var(--text-muted);">{{
                             a.assigned_date.strftime('%Y-%m-%d') }}</td>
                         <td style="padding: 15px 10px;">
@@ -54,7 +60,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" style="padding: 20px 10px; text-align: center; color: var(--text-muted);">No
+                        <td colspan="6" style="padding: 20px 10px; text-align: center; color: var(--text-muted);">No
                             assignments found.</td>
                     </tr>
                     {% endfor %}
