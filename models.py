@@ -20,8 +20,10 @@ class User(db.Model, UserMixin):
     assignments = db.relationship('Assignment', backref='volunteer', lazy=True)
     ratings = db.relationship('Rating', backref='volunteer', lazy=True)
     training_status = db.relationship('TrainingStatus', backref='user', lazy=True)
+    resource_requests = db.relationship('ResourceRequest', backref='volunteer', lazy=True)
 
 class TrainingStatus(db.Model):
+
     __tablename__ = 'training_status'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -40,6 +42,7 @@ class Disaster(db.Model):
 
     assignments = db.relationship('Assignment', backref='disaster', lazy=True)
     resources = db.relationship('ResourceAllocation', backref='disaster', lazy=True)
+    resource_requests = db.relationship('ResourceRequest', backref='disaster', lazy=True)
 
 class Resource(db.Model):
     __tablename__ = 'resources'
@@ -48,6 +51,8 @@ class Resource(db.Model):
     category = db.Column(db.String(50), nullable=False) # e.g., Food, Medical, Shelter, Tools
     quantity = db.Column(db.Integer, nullable=False, default=0)
     last_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    requests = db.relationship('ResourceRequest', backref='resource', lazy=True)
 
 class ResourceAllocation(db.Model):
     __tablename__ = 'resource_allocations'
@@ -76,3 +81,13 @@ class Rating(db.Model):
     rating_score = db.Column(db.Integer, nullable=False) # 1-5 scale
     remarks = db.Column(db.Text, nullable=True)
     rated_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+class ResourceRequest(db.Model):
+    __tablename__ = 'resource_requests'
+    id = db.Column(db.Integer, primary_key=True)
+    volunteer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    disaster_id = db.Column(db.Integer, db.ForeignKey('disasters.id'), nullable=False)
+    resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(50), nullable=False, default='Pending') # Pending, Approved, Rejected
+    request_date = db.Column(db.DateTime, default=datetime.utcnow)

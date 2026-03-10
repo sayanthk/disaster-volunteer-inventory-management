@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from models import db, User, Rating, Assignment
-from forms import RatingForm
+from flask_login import login_required, current_user
+from models import db, User, Rating, Assignment, ResourceRequest, Disaster, Resource
+from forms import RatingForm, ResourceRequestForm
 
 volunteer_bp = Blueprint('volunteer', __name__, url_prefix='/volunteers')
 
@@ -69,3 +70,52 @@ def complete_training():
         flash('No pending training found.', 'info')
         
     return redirect(url_for('main.index'))
+
+@volunteer_bp.route('/requests')
+@login_required
+def requests():
+    if current_user.role != 'Volunteer':
+        flash('Only volunteers can access resource requests view.', 'danger')
+        return redirect(url_for('main.index'))
+    
+    requests = ResourceRequest.query.filter_by(volunteer_id=current_user.id).order_by(ResourceRequest.request_date.desc()).all()
+    return render_template('volunteer/requests.html', requests=requests)
+
+@volunteer_bp.route('/requests/new', methods=['GET', 'POST'])
+@login_required
+def new_request():
+    if current_user.role != 'Volunteer':
+        flash('Only volunteers can request resources.', 'danger')
+        return redirect(url_for('main.index'))
+    
+    # Needs to be active and assigned
+    if current_user.status != 'Active':
+        flash('Your account must be Active to request resources.', 'danger')
+        return redirect(url_for('volunteer.requests'))
+        
+    assignments = Assignment.query.filter_by(volunteer_id=current_user.id, status='Assigned').all()
+    if not assignments:
+        flash('You have no active disaster assignments.', 'warning')
+        return redirect(url_for('volunteer.requests'))
+        
+    form = ResourceRequestForm()
+    form.disaster_id.choices = [(a.disaster_id, a.disaster.name) for a in assignments]
+    form.resource_id.choices = [(r.id, f"{r.name} (Available: {r.quantity})") for r in Resource.query.filter(Resource.quantity > 0).all()]
+    
+    if form.validate_on_submit():
+        if form.quantity.data <= 0:
+            flash('Quantity must be greater than zero.', 'danger')
+            return redirect(url_for('volunteer.new_request'))
+            
+        new_req = ResourceRequest(
+            volunteer_id=current_user.id,
+            disaster_id=form.disaster_id.data,
+            resource_id=form.resource_id.data,
+            quantity=form.quantity.data
+        )
+        db.session.add(new_req)
+        db.session.commit()
+        flash('Resource request submitted successfully.', 'success')
+        return redirect(url_for('volunteer.requests'))
+        
+    return render_template('volunteer/new_request.html', form=form)

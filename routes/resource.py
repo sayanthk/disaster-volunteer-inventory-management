@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from models import db, Resource, ResourceAllocation, Disaster
+from flask_login import login_required, current_user
+from models import db, Resource, ResourceAllocation, Disaster, ResourceRequest
 from forms import ResourceForm, AllocationForm
 
 resource_bp = Blueprint('resource', __name__, url_prefix='/resources')
@@ -61,3 +62,47 @@ def allocate():
         return redirect(url_for('resource.index'))
         
     return render_template('resource/allocate.html', form=form)
+
+@resource_bp.route('/requests')
+@login_required
+def requests():
+    if current_user.role not in ['Administrator', 'Inventory Manager']:
+        flash('Unauthorized access.', 'danger')
+        return redirect(url_for('main.index'))
+        
+    requests = ResourceRequest.query.order_by(ResourceRequest.request_date.desc()).all()
+    return render_template('resource/requests.html', requests=requests)
+
+@resource_bp.route('/requests/<int:id>/<action>', methods=['POST'])
+@login_required
+def process_request(id, action):
+    if current_user.role not in ['Administrator', 'Inventory Manager']:
+        flash('Unauthorized access.', 'danger')
+        return redirect(url_for('main.index'))
+        
+    req = ResourceRequest.query.get_or_404(id)
+    
+    if req.status != 'Pending':
+        flash('This request has already been processed.', 'warning')
+        return redirect(url_for('resource.requests'))
+        
+    if action == 'approve':
+        resource = Resource.query.get(req.resource_id)
+        if resource.quantity < req.quantity:
+            flash(f'Insufficient inventory to approve this request. Requested: {req.quantity}, Available: {resource.quantity}', 'danger')
+            return redirect(url_for('resource.requests'))
+            
+        resource.quantity -= req.quantity
+        req.status = 'Approved'
+        db.session.commit()
+        flash('Request approved.', 'success')
+        
+    elif action == 'reject':
+        req.status = 'Rejected'
+        db.session.commit()
+        flash('Request rejected.', 'info')
+        
+    else:
+        flash('Invalid action.', 'danger')
+        
+    return redirect(url_for('resource.requests'))

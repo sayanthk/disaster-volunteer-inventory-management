@@ -46,3 +46,9 @@ class RatingForm(FlaskForm):
     rating_score = SelectField('Rating Score (1-5)', choices=[('1','1'), ('2','2'), ('3','3'), ('4','4'), ('5','5')], coerce=int, validators=[DataRequired()])
     remarks = TextAreaField('Remarks / Feedback', validators=[])
     submit = SubmitField('Submit Rating')
+
+class ResourceRequestForm(FlaskForm):
+    disaster_id = SelectField('Disaster Event', coerce=int, validators=[DataRequired()])
+    resource_id = SelectField('Resource', coerce=int, validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
+    submit = SubmitField('Submit Request')

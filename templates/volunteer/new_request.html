@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}New Resource Request{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Request Resources for Disaster</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.disaster_id.label(class="form-label") }}
+                        {{ form.disaster_id(class="form-select") }}
+                        {% if form.disaster_id.errors %}
+                        <div class="text-danger">
+                            {% for error in form.disaster_id.errors %}
+                            <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">You can only request resources for disasters you are actively assigned
+                            to.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.resource_id.label(class="form-label") }}
+                        {{ form.resource_id(class="form-select") }}
+                        {% if form.resource_id.errors %}
+                        <div class="text-danger">
+                            {% for error in form.resource_id.errors %}
+                            <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.quantity.label(class="form-label") }}
+                        {{ form.quantity(class="form-control") }}
+                        {% if form.quantity.errors %}
+                        <div class="text-danger">
+                            {% for error in form.quantity.errors %}
+                            <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('volunteer.requests') }}" class="btn btn-secondary">Cancel</a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
