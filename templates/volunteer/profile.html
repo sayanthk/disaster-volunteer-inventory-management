@@ -2,189 +2,265 @@
 {% block title %}{{ volunteer.name }} - Volunteer Profile{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-md-8">
+<style>
+    /* Custom local styles for profile */
+    .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .profile-stats {
+        text-align: center;
+        padding-left: 30px;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        min-width: 200px;
+    }
+
+    @media (max-width: 768px) {
+        .profile-stats {
+            padding-left: 0;
+            border-left: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .profile-flex {
+            flex-direction: column;
+        }
+    }
+
+    .profile-flex {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .stat-box {
+        margin-bottom: 15px;
+    }
+
+    .stat-box h3 {
+        font-size: 2.5rem;
+        color: #fbbf24;
+        margin-bottom: 5px;
+    }
+
+    .stat-box small {
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+    }
+
+    .section-title {
+        margin: 40px 0 20px;
+        font-size: 1.5rem;
+        color: #818cf8;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+    }
+
+    .history-card {
+        background: rgba(30, 41, 59, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.2s;
+    }
+
+    .history-card:hover {
+        transform: translateY(-2px);
+        background: rgba(30, 41, 59, 0.8);
+    }
+
+    .history-info h4 {
+        margin-bottom: 5px;
+    }
+
+    .history-info p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    .custom-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .bg-success {
+        background: rgba(16, 185, 129, 0.2);
+        color: #a7f3d0;
+        border: 1px solid #10b981;
+    }
+
+    .bg-primary {
+        background: rgba(79, 70, 229, 0.2);
+        color: #a5b4fc;
+        border: 1px solid #4f46e5;
+    }
+
+    .bg-secondary {
+        background: rgba(100, 116, 139, 0.2);
+        color: #cbd5e1;
+        border: 1px solid #64748b;
+    }
+
+    .review-card {
+        border-left: 4px solid #fbbf24;
+    }
+
+    .review-card.bad {
+        border-left-color: var(--danger);
+    }
+
+    .review-card.excellent {
+        border-left-color: var(--success);
+    }
+</style>
+
+<div style="padding: 40px 0;">
+    <div class="profile-header">
         <h2>Volunteer Profile</h2>
-    </div>
-    <div class="col-md-4 text-end">
-        <a href="{{ url_for('volunteer.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Roster
+        <a href="{{ url_for('volunteer.index') }}" class="btn-outline">
+            &larr; Back to Roster
         </a>
     </div>
-</div>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-8">
-                <h3 class="mb-1">{{ volunteer.name }}</h3>
-                <p class="text-muted mb-3"><i class="fas fa-envelope"></i> {{ volunteer.email }} | <i
-                        class="fas fa-map-marker-alt"></i> {{ volunteer.location or 'Location not specified' }}</p>
+    <!-- Main Profile Card -->
+    <div class="glassmorphism profile-flex">
+        <div style="flex: 1; padding-right: 20px;">
+            <h1 style="font-size: 2rem; margin-bottom: 10px;">{{ volunteer.name }}</h1>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">
+                <span style="margin-right: 15px;">📧 {{ volunteer.email }}</span>
+                <span>📍 {{ volunteer.location or 'Location not specified' }}</span>
+            </p>
 
-                <h5 class="mt-3">Skills</h5>
-                <p>{{ volunteer.skills or 'No specific skills listed.' }}</p>
+            <h4 style="margin-bottom: 10px; color: #fff;">Skills & Expertise</h4>
+            <p
+                style="color: var(--text-muted); padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 20px;">
+                {{ volunteer.skills or 'No specific skills listed.' }}
+            </p>
 
-                <h5>Availability</h5>
-                <p><span class="badge bg-info text-dark">{{ volunteer.availability or 'Anytime' }}</span></p>
+            <h4 style="margin-bottom: 10px; color: #fff;">Availability</h4>
+            <span class="custom-badge bg-primary">{{ volunteer.availability or 'Anytime' }}</span>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-box">
+                <small>Average Rating</small>
+                <h3>{{ "%.1f"|format(volunteer.average_rating) }}</h3>
+                <div style="color: #fbbf24; font-size: 1.2rem; margin-bottom: 5px;">
+                    {% set full_stars = volunteer.average_rating|round(0, 'floor')|int %}
+                    {% for i in range(full_stars) %}★{% endfor %}
+                    {% set empty_stars = 5 - full_stars %}
+                    {% for i in range(empty_stars) %}☆{% endfor %}
+                </div>
+                <small>Based on {{ ratings|length }} reviews</small>
             </div>
-            <div class="col-md-4 text-center border-start">
-                <div class="p-3">
-                    <h5 class="text-muted text-uppercase mb-2">Overall Rating</h5>
-                    <div class="display-4 text-warning fw-bold mb-2">
-                        {{ "%.1f"|format(volunteer.average_rating) }}
-                    </div>
-                    <div>
-                        {% set full_stars = volunteer.average_rating|round(0, 'floor')|int %}
-                        {% for i in range(full_stars) %}
-                        <i class="fas fa-star text-warning"></i>
-                        {% endfor %}
-                        {% if volunteer.average_rating - full_stars >= 0.5 %}
-                        <i class="fas fa-star-half-alt text-warning"></i>
-                        {% set empty_stars = 4 - full_stars %}
+
+            <div style="margin: 25px 0; border-top: 1px solid rgba(255,255,255,0.05);"></div>
+
+            <div style="display: flex; justify-content: space-around;">
+                <div>
+                    <h3 style="font-size: 1.8rem; color: #a5b4fc;">{{ assignments|length }}</h3>
+                    <small>Assignments</small>
+                </div>
+                <div>
+                    <h3
+                        style="font-size: 1.8rem; color: {% if volunteer.status == 'Active' %}#a7f3d0{% else %}#fde68a{% endif %};">
+                        {% if volunteer.status == 'Active' %}✓{% else %}◷{% endif %}
+                    </h3>
+                    <small>{{ volunteer.status }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+        <!-- Assignment History -->
+        <div>
+            <h3 class="section-title">Assignment History</h3>
+            {% for assignment in assignments %}
+            <div class="history-card">
+                <div class="history-info">
+                    <h4>{{ assignment.disaster.name }}</h4>
+                    <p>📍 {{ assignment.disaster.location }} | 📅 Assigned: {{
+                        assignment.assigned_date.strftime('%Y-%m-%d') }}</p>
+                    <p style="margin-top: 10px; color: #fff;"><strong>Task:</strong> {{ assignment.task_description or
+                        'General Duties' }}</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="margin-bottom: 10px;">
+                        {% if assignment.status == 'Assigned' %}
+                        <span class="custom-badge bg-primary">Assigned</span>
+                        {% elif assignment.status == 'Completed' %}
+                        <span class="custom-badge bg-success">Completed</span>
                         {% else %}
-                        {% set empty_stars = 5 - full_stars %}
+                        <span class="custom-badge bg-secondary">{{ assignment.status }}</span>
                         {% endif %}
-                        {% for i in range(empty_stars) %}
-                        <i class="far fa-star text-warning"></i>
-                        {% endfor %}
                     </div>
-                    <p class="text-muted small mt-2">Based on {{ ratings|length }} reviews</p>
-                </div>
-
-                <hr>
-
-                <div class="d-flex justify-content-around text-center mt-3">
-                    <div>
-                        <h3 class="mb-0 text-primary">{{ assignments|length }}</h3>
-                        <small class="text-muted text-uppercase">Assignments</small>
-                    </div>
-                    <div>
-                        <h3
-                            class="mb-0 {% if volunteer.status == 'Active' %}text-success{% else %}text-warning{% endif %}">
-                            <i
-                                class="fas {% if volunteer.status == 'Active' %}fa-check-circle{% else %}fa-clock{% endif %}"></i>
-                        </h3>
-                        <small class="text-muted text-uppercase">{{ volunteer.status }}</small>
-                    </div>
+                    {% if assignment.completion_date %}
+                    <small style="color: var(--text-muted);">Completed: {{ assignment.completion_date.strftime('%b %d,
+                        %Y') }}</small>
+                    {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Tabs for detailed history -->
-<ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="assignments-tab" data-bs-toggle="tab" data-bs-target="#assignments"
-            type="button" role="tab" aria-controls="assignments" aria-selected="true">Assignment History</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="ratings-tab" data-bs-toggle="tab" data-bs-target="#ratings" type="button"
-            role="tab" aria-controls="ratings" aria-selected="false">Manager Feedback & Ratings</button>
-    </li>
-</ul>
-
-<div class="tab-content" id="profileTabsContent">
-
-    <!-- Assignments Tab -->
-    <div class="tab-pane fade show active" id="assignments" role="tabpanel" aria-labelledby="assignments-tab">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Date Assigned</th>
-                                <th>Disaster Event</th>
-                                <th>Specific Task / Role</th>
-                                <th>Status</th>
-                                <th>Date Completed</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for assignment in assignments %}
-                            <tr>
-                                <td>{{ assignment.assigned_date.strftime('%Y-%m-%d') }}</td>
-                                <td><strong>{{ assignment.disaster.name }}</strong><br><small class="text-muted">{{
-                                        assignment.disaster.location }}</small></td>
-                                <td>{{ assignment.task_description or 'General Duties' }}</td>
-                                <td>
-                                    {% if assignment.status == 'Assigned' %}
-                                    <span class="badge bg-primary">Assigned</span>
-                                    {% elif assignment.status == 'Completed' %}
-                                    <span class="badge bg-success">Completed</span>
-                                    {% else %}
-                                    <span class="badge bg-secondary">{{ assignment.status }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ assignment.completion_date.strftime('%Y-%m-%d') if assignment.completion_date
-                                    else '-' }}</td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="5" class="text-center text-muted py-4">This volunteer has no assignment
-                                    history.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ratings Tab -->
-    <div class="tab-pane fade" id="ratings" role="tabpanel" aria-labelledby="ratings-tab">
-        {% if ratings %}
-        <div class="row">
-            {% for rating in ratings %}
-            <div class="col-md-6 mb-4">
-                <div
-                    class="card h-100 border-start border-4 {% if rating.rating_score >= 4 %}border-success{% elif rating.rating_score == 3 %}border-warning{% else %}border-danger{% endif %} shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title mb-0">{{ rating.disaster.name if rating.disaster else 'Unknown Event'
-                                }}</h5>
-                            <div class="text-warning">
-                                {% for i in range(rating.rating_score) %}
-                                <i class="fas fa-star"></i>
-                                {% endfor %}
-                                {% for i in range(5 - rating.rating_score) %}
-                                <i class="far fa-star"></i>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <h6 class="card-subtitle mb-3 text-muted" style="font-size: 0.85rem;"><i
-                                class="far fa-calendar-alt"></i> Evaluated on {{ rating.rated_date.strftime('%Y-%m-%d
-                            %H:%M') }}</h6>
-                        <p class="card-text">
-                            {% if rating.remarks %}
-                            <i class="fas fa-quote-left text-muted me-2 opacity-50"></i>
-                            <em>{{ rating.remarks }}</em>
-                            <i class="fas fa-quote-right text-muted ms-2 opacity-50"></i>
-                            {% else %}
-                            <span class="text-muted fst-italic">No specific remarks provided.</span>
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
+            {% else %}
+            <div class="glassmorphism" style="text-align: center; padding: 40px;">
+                <p style="color: var(--text-muted);">This volunteer has no assignment history yet.</p>
             </div>
             {% endfor %}
         </div>
-        {% else %}
-        <div class="card shadow-sm border-0">
-            <div class="card-body text-center py-5">
-                <i class="far fa-comment-alt fa-3x text-muted mb-3 opacity-25"></i>
-                <h5 class="text-muted">No Manager Feedback Yet</h5>
-                <p class="text-muted mb-0">This volunteer has not received any formal ratings or reviews.</p>
+
+        <!-- Ratings & Feedback -->
+        <div style="margin-top: 40px;">
+            <h3 class="section-title">Manager Feedback</h3>
+            <div class="form-grid" style="gap: 20px;">
+                {% for rating in ratings %}
+                <div class="glassmorphism review-card {% if rating.rating_score >= 4 %}excellent{% elif rating.rating_score <= 2 %}bad{% endif %}"
+                    style="padding: 25px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div>
+                            <h4 style="margin-bottom: 5px;">{{ rating.disaster.name if rating.disaster else 'Unknown
+                                Event' }}</h4>
+                            <small style="color: var(--text-muted);">📅 {{ rating.rated_date.strftime('%b %d, %Y')
+                                }}</small>
+                        </div>
+                        <div style="color: #fbbf24; font-size: 1.1rem; letter-spacing: 2px;">
+                            {% for i in range(rating.rating_score) %}★{% endfor %}<!--
+                            -->{% for i in range(5 - rating.rating_score) %}☆{% endfor %}
+                        </div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; position: relative;">
+                        <span
+                            style="position: absolute; top: -10px; left: 10px; font-size: 2rem; color: rgba(255,255,255,0.1); line-height: 1;">"</span>
+                        {% if rating.remarks %}
+                        <p
+                            style="color: #cbd5e1; font-style: italic; line-height: 1.5; z-index: 1; position: relative;">
+                            {{ rating.remarks }}</p>
+                        {% else %}
+                        <p style="color: var(--text-muted); font-style: italic; opacity: 0.5;">No additional remarks
+                            provided.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="glassmorphism" style="text-align: center; padding: 40px; grid-column: 1 / -1;">
+                    <p style="color: var(--text-muted);">This volunteer has not received any formal feedback yet.</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
-        {% endif %}
     </div>
-
 </div>
-
-<!-- Bootstrap tabs requirement (since we're adding JS-based tabs) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
 {% endblock %}
