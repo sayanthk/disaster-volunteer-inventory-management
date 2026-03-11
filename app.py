@@ -42,6 +42,19 @@ def create_app():
         except Exception:
             db.session.rollback() # Ignore if column already exists
 
+        # Ensure migration for assignments table (e.g. Render deployments)
+        try:
+            db.session.execute(text("ALTER TABLE assignments ADD COLUMN task_description TEXT"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback() # Ignore if column already exists
+
+        try:
+            db.session.execute(text("ALTER TABLE assignments ADD COLUMN completion_date TIMESTAMP"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback() # Ignore if column already exists
+
     return app
 
 app = create_app()
